@@ -1,21 +1,26 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class DrawOnImage : MonoBehaviour
 {
-    [SerializeField] private RawImage drawImage;
-    [SerializeField] private float brushSize = 20f;
-    [SerializeField] private int scaleFactor = 2;
-    [SerializeField] private Color brushColor = Color.black;
+    private RawImage drawImage;
+    private int scaleFactor;
 
     private Texture2D canvasTexture;
     private Color32[] canvasColors;
     private Vector2 previousPosition;
-    private Texture2D originalTexture;
 
-    private void Start()
+    [SerializeField] private float brushSize = 10f;
+    [SerializeField] private Color brushColor = Color.black;
+
+    void Awake()
     {
-        originalTexture = drawImage.texture as Texture2D;
+        drawImage = GetComponent<RawImage>();
+    }
+
+    void Start()
+    {
+        Texture2D originalTexture = drawImage.texture as Texture2D;
 
         // calculate scaleFactor automatically based on the width of the RawImage and the original texture
         float widthRatio = drawImage.rectTransform.rect.width / (float)originalTexture.width;
@@ -122,10 +127,4 @@ public class DrawOnImage : MonoBehaviour
         return localCursor;
     }
 
-    private void OnDestroy()
-    {
-        originalTexture.SetPixels32(canvasColors);
-        originalTexture.Apply();
-        drawImage.texture = originalTexture;
-    }
 }
